@@ -5,6 +5,8 @@
 
 cmake_minimum_required(VERSION 3.5)
 
+include(CheckCXXCompilerFlag)
+
 function(get_compiler_flags)
 	set(options
 		ENABLE_WARNINGS_AS_ERRORS
@@ -81,7 +83,7 @@ function(get_compiler_flags)
 
 	# Warnings as errors
 	if (GET_COMPILER_FLAGS_ENABLE_WARNINGS_AS_ERRORS)
-		if (GET_COMPILER_FLAGS_COMPILER_ID STREQUAL "GNU" OR GET_COMPILER_FLAGS_COMPILER_ID STREQUAL "CLANG")
+		if (GET_COMPILER_FLAGS_COMPILER_ID STREQUAL "GNU" OR GET_COMPILER_FLAGS_COMPILER_ID MATCHES ".*CLANG")
 			list(APPEND compiler_flags "-Werror")
 		elseif(GET_COMPILER_FLAGS_COMPILER_ID STREQUAL "MSVC")
 			list(APPEND compiler_flags "/WX")
@@ -93,8 +95,8 @@ function(get_compiler_flags)
 
 	# Enable most warnings
 	if (GET_COMPILER_FLAGS_ENABLE_MOST_WARNINGS)
-		if (GET_COMPILER_FLAGS_COMPILER_ID STREQUAL "GNU" OR GET_COMPILER_FLAGS_COMPILER_ID STREQUAL "CLANG")
-			list(APPEND compiler_flags "-Wall -Wpedantic -Wextra")
+		if (GET_COMPILER_FLAGS_COMPILER_ID STREQUAL "GNU" OR GET_COMPILER_FLAGS_COMPILER_ID MATCHES ".*CLANG")
+			list(APPEND compiler_flags "-Wall" "-Wpedantic" "-Wextra")
 		elseif(GET_COMPILER_FLAGS_COMPILER_ID STREQUAL "MSVC")
 			list(APPEND compiler_flags "/W4")
 		else()
@@ -105,8 +107,8 @@ function(get_compiler_flags)
 
 	# Enable all warnings
 	if (GET_COMPILER_FLAGS_ENABLE_ALL_WARNINGS)
-		if (GET_COMPILER_FLAGS_COMPILER_ID STREQUAL "GNU" OR GET_COMPILER_FLAGS_COMPILER_ID STREQUAL "CLANG")
-			list(APPEND compiler_flags "-Wall -Wpedantic -Wextra -Wabi")
+		if (GET_COMPILER_FLAGS_COMPILER_ID STREQUAL "GNU" OR GET_COMPILER_FLAGS_COMPILER_ID MATCHES ".*CLANG")
+			list(APPEND compiler_flags "-Wall" "-Wpedantic" "-Wextra" "-Wabi")
 		elseif(GET_COMPILER_FLAGS_COMPILER_ID STREQUAL "MSVC")
 			list(APPEND compiler_flags "/Wall")
 		else()
@@ -117,9 +119,12 @@ function(get_compiler_flags)
 
 
 	if (NOT GET_COMPILER_FLAGS_DISABLE_DEFAULT_FLAGS)
-		if (GET_COMPILER_FLAGS_COMPILER_ID STREQUAL "GNU" OR GET_COMPILER_FLAGS_COMPILER_ID STREQUAL "CLANG")
+		if (GET_COMPILER_FLAGS_COMPILER_ID STREQUAL "GNU" OR GET_COMPILER_FLAGS_COMPILER_ID MATCHES ".*CLANG")
 			# Avoid "File too big" error
-			list(APPEND compiler_flags "-Wa,-mbig-obj")
+			check_cxx_compiler_flag("-Wa-mbig-obj" COMPILER_HAS_MBIG_OBJ)
+			if (COMPILER_HAS_MBIG_OBJ)
+				list(APPEND compiler_flags "-Wa,-mbig-obj")
+			endif()
 		elseif (GET_COMPILER_FLAGS_COMPILER_ID STREQUAL "MSVC")
 			# Avoid "Fatal Error C1128: number of sections exceeded object file format limit" error
 			# Penalty of using this flag by default should be small to non-existent
