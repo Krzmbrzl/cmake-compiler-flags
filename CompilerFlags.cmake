@@ -133,7 +133,7 @@ function(get_compiler_flags)
 
 			# Treat unrecognized compiler options as errors (otherwise the actual behavior of the code
 			# might end up not being the one the programmer thinks it is).
-			list(APPEND compiler_flags "/Woptions:strict")
+			list(APPEND compiler_flags "/options:strict")
 		endif()
 	endif()
 
