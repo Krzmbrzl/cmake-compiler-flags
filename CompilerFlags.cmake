@@ -12,6 +12,7 @@ function(get_compiler_flags)
 		ENABLE_WARNINGS_AS_ERRORS
 		ENABLE_MOST_WARNINGS
 		ENABLE_ALL_WARNINGS
+		DISABLE_ALL_WARNINGS
 		DISABLE_DEFAULT_FLAGS
 	)
 	set(oneValueArgs
@@ -114,6 +115,18 @@ function(get_compiler_flags)
 		else()
 			message(FATAL_ERROR
 				"get_compiler_flags: Unsupported compiler \"${GET_COMPILER_FLAGS_COMPILER_ID}\" for feature ENABLE_ALL_WARNINGS")
+		endif()
+	endif()
+
+	# Disable all warnings
+	if (GET_COMPILER_FLAGS_DISABLE_ALL_WARNINGS)
+		if (GET_COMPILER_FLAGS_COMPILER_ID STREQUAL "GNU" OR GET_COMPILER_FLAGS_COMPILER_ID MATCHES ".*CLANG")
+			list(APPEND compiler_flags "-w")
+		elseif(GET_COMPILER_FLAGS_COMPILER_ID STREQUAL "MSVC")
+			list(APPEND compiler_flags "/w")
+		else()
+			message(FATAL_ERROR
+				"get_compiler_flags: Unsupported compiler \"${GET_COMPILER_FLAGS_COMPILER_ID}\" for feature DISABLE_ALL_WARNINGS")
 		endif()
 	endif()
 

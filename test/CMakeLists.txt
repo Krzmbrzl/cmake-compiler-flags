@@ -53,12 +53,21 @@ get_compiler_flags(
 message(STATUS "Flag(s) to enable all warnings: ${ALL_WARNINGS_FLAGS}")
 
 get_compiler_flags(
-	ENABLE_MOST_WARNINGS
-	ENABLE_WARNINGS_AS_ERRORS
-	OUTPUT_VARIABLE MOST_FLAGS
+	DISABLE_DEFAULT_FLAGS
+	DISABLE_ALL_WARNINGS
+	OUTPUT_VARIABLE NO_WARNINGS_FLAGS
 )
 
-message(STATUS "Most supported flags: ${MOST_FLAGS}")
+message(STATUS "Flag(s) to disable all warnings: ${NO_WARNINGS_FLAGS}")
+
+get_compiler_flags(
+	ENABLE_ALL_WARNINGS
+	ENABLE_WARNINGS_AS_ERRORS
+	DISABLE_ALL_WARNINGS
+	OUTPUT_VARIABLE ALL_FLAGS
+)
+
+message(STATUS "All supported flags: ${ALL_FLAGS}")
 
 add_executable(tester "test.cpp")
-target_compile_options(tester PRIVATE ${MOST_FLAGS})
+target_compile_options(tester PRIVATE ${ALL_FLAGS})
