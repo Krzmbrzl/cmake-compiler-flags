@@ -58,7 +58,11 @@ function(get_compiler_flags)
 	endif()
 	if (NOT GET_COMPILER_FLAGS_COMPILER_ID)
 		# Use current compiler as default
-		set(GET_COMPILER_FLAGS_COMPILER_ID "${CMAKE_${GET_COMPILER_FLAGS_LANG}_COMPILER_ID}")
+		if (CMAKE_${GET_COMPILER_FLAGS_LANG}_SIMULATE_ID)
+			set(GET_COMPILER_FLAGS_COMPILER_ID "${CMAKE_${GET_COMPILER_FLAGS_LANG}_SIMULATE_ID}")
+		else()
+			set(GET_COMPILER_FLAGS_COMPILER_ID "${CMAKE_${GET_COMPILER_FLAGS_LANG}_COMPILER_ID}")
+		endif()
 	endif()
 
 	######################################
@@ -80,6 +84,26 @@ function(get_compiler_flags)
 	endif()
 
 
+	set(IS_MSVC FALSE)
+	set(IS_GCC FALSE)
+	set(IS_CLANG FALSE)
+	set(IS_SOME_CLANG FALSE)
+	set(IS_APPLE_CLANG FALSE)
+
+	if (GET_COMPILER_FLAGS_COMPILER_ID STREQUAL "MSVC")
+		set(IS_MSVC TRUE)
+	elseif (GET_COMPILER_FLAGS_COMPILER_ID STREQUAL "GNU")
+		set(IS_GCC TRUE)
+	elseif (GET_COMPILER_FLAGS_COMPILER_ID STREQUAL "CLANG")
+		set(IS_CLANG TRUE)
+		set(IS_SOME_CLANG TRUE)
+	elseif (GET_COMPILER_FLAGS_COMPILER_ID STREQUAL "APPLECLANG")
+		set(IS_APPLE_CLANG TRUE)
+		set(IS_SOME_CLANG TRUE)
+	else()
+		message(FATAL_ERROR "Unsupported compiler: ${GET_COMPILER_FLAGS_COMPILER_ID}")
+	endif()
+
 
 	######################################
 	########### Flag handling ############
@@ -88,9 +112,9 @@ function(get_compiler_flags)
 
 	# Warnings as errors
 	if (GET_COMPILER_FLAGS_ENABLE_WARNINGS_AS_ERRORS)
-		if (GET_COMPILER_FLAGS_COMPILER_ID STREQUAL "GNU" OR GET_COMPILER_FLAGS_COMPILER_ID MATCHES ".*CLANG")
+		if (IS_GCC OR IS_SOME_CLANG)
 			list(APPEND compiler_flags "-Werror")
-		elseif(GET_COMPILER_FLAGS_COMPILER_ID STREQUAL "MSVC")
+		elseif(IS_MSVC)
 			list(APPEND compiler_flags "/WX")
 		else()
 			message(FATAL_ERROR
@@ -100,9 +124,9 @@ function(get_compiler_flags)
 
 	# Enable most warnings
 	if (GET_COMPILER_FLAGS_ENABLE_MOST_WARNINGS)
-		if (GET_COMPILER_FLAGS_COMPILER_ID STREQUAL "GNU" OR GET_COMPILER_FLAGS_COMPILER_ID MATCHES ".*CLANG")
+		if (IS_GCC OR IS_SOME_CLANG)
 			list(APPEND compiler_flags "-Wall" "-Wpedantic" "-Wextra")
-		elseif(GET_COMPILER_FLAGS_COMPILER_ID STREQUAL "MSVC")
+		elseif(IS_MSVC)
 			list(APPEND compiler_flags "/W4")
 		else()
 			message(FATAL_ERROR
@@ -112,9 +136,9 @@ function(get_compiler_flags)
 
 	# Enable all warnings
 	if (GET_COMPILER_FLAGS_ENABLE_ALL_WARNINGS)
-		if (GET_COMPILER_FLAGS_COMPILER_ID STREQUAL "GNU" OR GET_COMPILER_FLAGS_COMPILER_ID MATCHES ".*CLANG")
+		if (IS_GCC OR IS_SOME_CLANG)
 			list(APPEND compiler_flags "-Wall" "-Wpedantic" "-Wextra" "-Wabi")
-		elseif(GET_COMPILER_FLAGS_COMPILER_ID STREQUAL "MSVC")
+		elseif(IS_MSVC)
 			list(APPEND compiler_flags "/Wall")
 		else()
 			message(FATAL_ERROR
@@ -124,9 +148,9 @@ function(get_compiler_flags)
 
 	# Disable all warnings
 	if (GET_COMPILER_FLAGS_DISABLE_ALL_WARNINGS)
-		if (GET_COMPILER_FLAGS_COMPILER_ID STREQUAL "GNU" OR GET_COMPILER_FLAGS_COMPILER_ID MATCHES ".*CLANG")
+		if (IS_GCC OR IS_SOME_CLANG)
 			list(APPEND compiler_flags "-w")
-		elseif(GET_COMPILER_FLAGS_COMPILER_ID STREQUAL "MSVC")
+		elseif(IS_MSVC)
 			list(APPEND compiler_flags "/w")
 		else()
 			message(FATAL_ERROR
@@ -136,9 +160,9 @@ function(get_compiler_flags)
 
 	# Make sure a plain char is signed
 	if (GET_COMPILER_FLAGS_ENSURE_DEFAULT_CHAR_IS_SIGNED)
-		if (GET_COMPILER_FLAGS_COMPILER_ID STREQUAL "GNU" OR GET_COMPILER_FLAGS_COMPILER_ID MATCHES ".*CLANG")
+		if (IS_GCC OR IS_SOME_CLANG)
 			list(APPEND compiler_flags "-fsigned-char")
-		elseif(GET_COMPILER_FLAGS_COMPILER_ID STREQUAL "MSVC")
+		elseif(IS_MSVC)
 			# Nothing to do. For MSVC, the char type is always signed by default
 		else()
 			message(FATAL_ERROR
@@ -148,9 +172,9 @@ function(get_compiler_flags)
 
 	# Make sure a plain char is unsigned
 	if (GET_COMPILER_FLAGS_ENSURE_DEFAULT_CHAR_IS_UNSIGNED)
-		if (GET_COMPILER_FLAGS_COMPILER_ID STREQUAL "GNU" OR GET_COMPILER_FLAGS_COMPILER_ID MATCHES ".*CLANG")
+		if (IS_GCC OR IS_SOME_CLANG)
 			list(APPEND compiler_flags "-funsigned-char")
-		elseif(GET_COMPILER_FLAGS_COMPILER_ID STREQUAL "MSVC")
+		elseif(IS_MSVC)
 			list(APPEND compiler_flags "/J")
 		else()
 			message(FATAL_ERROR
@@ -160,13 +184,13 @@ function(get_compiler_flags)
 
 
 	if (NOT GET_COMPILER_FLAGS_DISABLE_DEFAULT_FLAGS)
-		if (GET_COMPILER_FLAGS_COMPILER_ID STREQUAL "GNU" OR GET_COMPILER_FLAGS_COMPILER_ID MATCHES ".*CLANG")
+		if (IS_GCC OR IS_SOME_CLANG)
 			# Avoid "File too big" error
 			check_cxx_compiler_flag("-Wa-mbig-obj" COMPILER_HAS_MBIG_OBJ)
 			if (COMPILER_HAS_MBIG_OBJ)
 				list(APPEND compiler_flags "-Wa,-mbig-obj")
 			endif()
-		elseif (GET_COMPILER_FLAGS_COMPILER_ID STREQUAL "MSVC")
+		elseif (IS_MSVC)
 			# Avoid "Fatal Error C1128: number of sections exceeded object file format limit" error
 			# Penalty of using this flag by default should be small to non-existent
 			# (see https://stackoverflow.com/q/15110580)
