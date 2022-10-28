@@ -68,6 +68,10 @@ get_compiler_flags(
 
 message(STATUS "Flag(s) to ensure plain char is signed: ${SIGNED_CHAR_FLAGS}")
 
+add_executable(signed_char "char_signedness.cpp")
+target_compile_definitions(signed_char PRIVATE EXPECT_CHAR_SIGNED)
+target_compile_options(signed_char PRIVATE ${SIGNED_CHAR_FLAGS})
+
 get_compiler_flags(
 	DISABLE_DEFAULT_FLAGS
 	ENSURE_DEFAULT_CHAR_IS_UNSIGNED
@@ -75,6 +79,10 @@ get_compiler_flags(
 )
 
 message(STATUS "Flag(s) to ensure plain char is unsigned: ${UNSIGNED_CHAR_FLAGS}")
+
+add_executable(unsigned_char "char_signedness.cpp")
+target_compile_definitions(unsigned_char PRIVATE EXPECT_CHAR_UNSIGNED)
+target_compile_options(unsigned_char PRIVATE ${UNSIGNED_CHAR_FLAGS})
 
 get_compiler_flags(
 	ENABLE_ALL_WARNINGS
