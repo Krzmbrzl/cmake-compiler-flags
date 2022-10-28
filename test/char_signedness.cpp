@@ -1,11 +1,16 @@
-int main() {
-	constexpr char c = -2;
+#include <climits>
 
 #ifdef EXPECT_CHAR_SIGNED
-	static_assert(c < 0, "Expected char to be signed");
+#if CHAR_MAX != SCHAR_MAX
+#error "Expected char to be signed"
 #endif
-#ifdef EXPECT_CHAR_UNSIGNED
-	static_assert(c > 0, "Expected char to be unsigned");
 #endif
 
+#ifdef EXPECT_CHAR_UNSIGNED
+#if CHAR_MAX != UCHAR_MAX
+#error "Expected char to be unsigned"
+#endif
+#endif
+
+int main() {
 }
