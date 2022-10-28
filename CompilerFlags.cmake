@@ -12,8 +12,12 @@ function(get_compiler_flags)
 		ENABLE_WARNINGS_AS_ERRORS
 		ENABLE_MOST_WARNINGS
 		ENABLE_ALL_WARNINGS
+
 		DISABLE_ALL_WARNINGS
 		DISABLE_DEFAULT_FLAGS
+
+		ENSURE_DEFAULT_CHAR_IS_SIGNED
+		ENSURE_DEFAULT_CHAR_IS_UNSIGNED
 	)
 	set(oneValueArgs
 		COMPILER_ID
@@ -127,6 +131,30 @@ function(get_compiler_flags)
 		else()
 			message(FATAL_ERROR
 				"get_compiler_flags: Unsupported compiler \"${GET_COMPILER_FLAGS_COMPILER_ID}\" for feature DISABLE_ALL_WARNINGS")
+		endif()
+	endif()
+
+	# Make sure a plain char is signed
+	if (GET_COMPILER_FLAGS_ENSURE_DEFAULT_CHAR_IS_SIGNED)
+		if (GET_COMPILER_FLAGS_COMPILER_ID STREQUAL "GNU" OR GET_COMPILER_FLAGS_COMPILER_ID MATCHES ".*CLANG")
+			list(APPEND compiler_flags "-fsigned-char")
+		elseif(GET_COMPILER_FLAGS_COMPILER_ID STREQUAL "MSVC")
+			# Nothing to do. For MSVC, the char type is always signed by default
+		else()
+			message(FATAL_ERROR
+				"get_compiler_flags: Unsupported compiler \"${GET_COMPILER_FLAGS_COMPILER_ID}\" for feature ENSURE_DEFAULT_CHAR_IS_SIGNED")
+		endif()
+	endif()
+
+	# Make sure a plain char is unsigned
+	if (GET_COMPILER_FLAGS_ENSURE_DEFAULT_CHAR_IS_UNSIGNED)
+		if (GET_COMPILER_FLAGS_COMPILER_ID STREQUAL "GNU" OR GET_COMPILER_FLAGS_COMPILER_ID MATCHES ".*CLANG")
+			list(APPEND compiler_flags "-funsigned-char")
+		elseif(GET_COMPILER_FLAGS_COMPILER_ID STREQUAL "MSVC")
+			list(APPEND compiler_flags "/J")
+		else()
+			message(FATAL_ERROR
+				"get_compiler_flags: Unsupported compiler \"${GET_COMPILER_FLAGS_COMPILER_ID}\" for feature ENSURE_DEFAULT_CHAR_IS_UNSIGNED")
 		endif()
 	endif()
 

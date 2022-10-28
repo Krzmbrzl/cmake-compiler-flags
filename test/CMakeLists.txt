@@ -61,9 +61,27 @@ get_compiler_flags(
 message(STATUS "Flag(s) to disable all warnings: ${NO_WARNINGS_FLAGS}")
 
 get_compiler_flags(
+	DISABLE_DEFAULT_FLAGS
+	ENSURE_DEFAULT_CHAR_IS_SIGNED
+	OUTPUT_VARIABLE SIGNED_CHAR_FLAGS
+)
+
+message(STATUS "Flag(s) to ensure plain char is signed: ${SIGNED_CHAR_FLAGS}")
+
+get_compiler_flags(
+	DISABLE_DEFAULT_FLAGS
+	ENSURE_DEFAULT_CHAR_IS_UNSIGNED
+	OUTPUT_VARIABLE UNSIGNED_CHAR_FLAGS
+)
+
+message(STATUS "Flag(s) to ensure plain char is unsigned: ${UNSIGNED_CHAR_FLAGS}")
+
+get_compiler_flags(
 	ENABLE_ALL_WARNINGS
 	ENABLE_WARNINGS_AS_ERRORS
 	DISABLE_ALL_WARNINGS
+	ENSURE_DEFAULT_CHAR_IS_SIGNED
+	ENSURE_DEFAULT_CHAR_IS_UNSIGNED
 	OUTPUT_VARIABLE ALL_FLAGS
 )
 
