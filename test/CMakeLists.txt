@@ -28,6 +28,8 @@ if (EMPTY_FLAGS)
 	message(FATAL_ERROR "Got flags, but expected no flags to be returned: \"${EMPTY_FLAGS}\"")
 endif()
 
+
+# Warnings as errors 
 get_compiler_flags(
 	DISABLE_DEFAULT_FLAGS
 	ENABLE_WARNINGS_AS_ERRORS
@@ -36,6 +38,8 @@ get_compiler_flags(
 
 message(STATUS "Flag(s) to turn warnings into errors: ${WARNINGS_AS_ERRORS_FLAGS}")
 
+
+# Enable most warnings
 get_compiler_flags(
 	DISABLE_DEFAULT_FLAGS
 	ENABLE_MOST_WARNINGS
@@ -44,6 +48,8 @@ get_compiler_flags(
 
 message(STATUS "Flag(s) to enable most warnings: ${MOST_WARNINGS_FLAGS}")
 
+
+# Enable all warnings
 get_compiler_flags(
 	DISABLE_DEFAULT_FLAGS
 	ENABLE_ALL_WARNINGS
@@ -52,6 +58,8 @@ get_compiler_flags(
 
 message(STATUS "Flag(s) to enable all warnings: ${ALL_WARNINGS_FLAGS}")
 
+
+# Disable all warnings
 get_compiler_flags(
 	DISABLE_DEFAULT_FLAGS
 	DISABLE_ALL_WARNINGS
@@ -60,6 +68,8 @@ get_compiler_flags(
 
 message(STATUS "Flag(s) to disable all warnings: ${NO_WARNINGS_FLAGS}")
 
+
+# Ensure plain char is signed
 get_compiler_flags(
 	DISABLE_DEFAULT_FLAGS
 	ENSURE_DEFAULT_CHAR_IS_SIGNED
@@ -72,6 +82,8 @@ add_executable(signed_char "char_signedness.cpp")
 target_compile_definitions(signed_char PRIVATE EXPECT_CHAR_SIGNED)
 target_compile_options(signed_char PRIVATE ${SIGNED_CHAR_FLAGS})
 
+
+# Ensure plain char is unsigned
 get_compiler_flags(
 	DISABLE_DEFAULT_FLAGS
 	ENSURE_DEFAULT_CHAR_IS_UNSIGNED
@@ -84,6 +96,9 @@ add_executable(unsigned_char "char_signedness.cpp")
 target_compile_definitions(unsigned_char PRIVATE EXPECT_CHAR_UNSIGNED)
 target_compile_options(unsigned_char PRIVATE ${UNSIGNED_CHAR_FLAGS})
 
+
+# Test all flags at once and see if a program can be compiled with them
+# (aka: whether all flags are known to the compiler)
 get_compiler_flags(
 	ENABLE_ALL_WARNINGS
 	ENABLE_WARNINGS_AS_ERRORS
