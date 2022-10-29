@@ -97,11 +97,22 @@ target_compile_definitions(unsigned_char PRIVATE EXPECT_CHAR_UNSIGNED)
 target_compile_options(unsigned_char PRIVATE ${UNSIGNED_CHAR_FLAGS})
 
 
+# Enable unsafe (aka fast) math
+get_compiler_flags(
+	DISABLE_DEFAULT_FLAGS
+	ENABLE_UNSAFE_MATH
+	OUTPUT_VARIABLE UNSAFE_MATH_FLAGS
+)
+
+message(STATUS "Flag(s) to enable unsafe (\"fast\") math: ${UNSAFE_MATH_FLAGS}")
+
+
 # Test all flags at once and see if a program can be compiled with them
 # (aka: whether all flags are known to the compiler)
 get_compiler_flags(
 	ENABLE_ALL_WARNINGS
 	ENABLE_WARNINGS_AS_ERRORS
+	ENABLE_UNSAFE_MATH
 	DISABLE_ALL_WARNINGS
 	ENSURE_DEFAULT_CHAR_IS_SIGNED
 	ENSURE_DEFAULT_CHAR_IS_UNSIGNED

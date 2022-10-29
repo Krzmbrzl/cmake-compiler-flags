@@ -12,6 +12,7 @@ function(get_compiler_flags)
 		ENABLE_WARNINGS_AS_ERRORS
 		ENABLE_MOST_WARNINGS
 		ENABLE_ALL_WARNINGS
+		ENABLE_UNSAFE_MATH
 
 		DISABLE_ALL_WARNINGS
 		DISABLE_DEFAULT_FLAGS
@@ -179,6 +180,18 @@ function(get_compiler_flags)
 		else()
 			message(FATAL_ERROR
 				"get_compiler_flags: Unsupported compiler \"${GET_COMPILER_FLAGS_COMPILER_ID}\" for feature ENSURE_DEFAULT_CHAR_IS_UNSIGNED")
+		endif()
+	endif()
+
+	# Enable unsafe (aka "fast") math
+	if (GET_COMPILER_FLAGS_ENABLE_UNSAFE_MATH)
+		if (IS_GCC OR IS_SOME_CLANG)
+			list(APPEND compiler_flags "-ffast-math")
+		elseif(IS_MSVC)
+			list(APPEND compiler_flags "/fp:fast")
+		else()
+			message(FATAL_ERROR
+				"get_compiler_flags: Unsupported compiler \"${GET_COMPILER_FLAGS_COMPILER_ID}\" for feature ENABLE_UNSAFE_MATH")
 		endif()
 	endif()
 
