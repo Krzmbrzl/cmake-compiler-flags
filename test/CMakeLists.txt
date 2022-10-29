@@ -10,6 +10,7 @@ project(CompilerFlagsTest)
 list(APPEND CMAKE_MODULE_PATH "${CMAKE_SOURCE_DIR}/..")
 
 include(CompilerFlags)
+include(CheckCXXCompilerFlag)
 
 # If no options are given, we should get a set of default flags
 get_compiler_flags(
@@ -121,5 +122,13 @@ get_compiler_flags(
 
 message(STATUS "All supported flags: ${ALL_FLAGS}")
 
-add_executable(tester "test.cpp")
-target_compile_options(tester PRIVATE ${ALL_FLAGS})
+message(STATUS "Verifying all flags are accepted by current compiler...")
+foreach (CURRENT_FLAG IN LISTS ALL_FLAGS)
+	check_cxx_compiler_flag(${CURRENT_FLAG} FLAG_USABLE)
+
+	if (NOT FLAG_USABLE)
+		message(FATAL_ERROR "Flag \"${CURRENT_FLAG}\" not usable with current CXX compiler")
+	endif()
+	# Remove variable from cache to ensure next iterations still perform the test
+	unset(FLAG_USABLE CACHE)
+endforeach()
