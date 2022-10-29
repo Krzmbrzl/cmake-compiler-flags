@@ -32,5 +32,5 @@ jobs:
         run: echo "CXX=${{ matrix.compiler }}" >> $GITHUB_ENV
 
       - name: Test
-        run: "set -e; cd test; mkdir build; cd build; cmake ..; cmake --build ."
+        run: "set -e; cd test; mkdir build; cd build; cmake .. || cat D:/a/cmake-compiler-flags/cmake-compiler-flags/test/build/CMakeFiles/CMakeError.log; cmake --build ."
         shell: bash

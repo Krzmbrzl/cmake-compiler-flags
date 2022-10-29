@@ -19,6 +19,10 @@ function(get_compiler_flags)
 
 		ENSURE_DEFAULT_CHAR_IS_SIGNED
 		ENSURE_DEFAULT_CHAR_IS_UNSIGNED
+
+		OPTIMIZE_FOR_SPEED
+		OPTIMIZE_FOR_SIZE
+		OPTIMIZE_FOR_DEBUG
 	)
 	set(oneValueArgs
 		COMPILER_ID
@@ -192,6 +196,42 @@ function(get_compiler_flags)
 		else()
 			message(FATAL_ERROR
 				"get_compiler_flags: Unsupported compiler \"${GET_COMPILER_FLAGS_COMPILER_ID}\" for feature ENABLE_UNSAFE_MATH")
+		endif()
+	endif()
+
+	# Instruct the compiler to optimize for maximized performance
+	if (GET_COMPILER_FLAGS_OPTIMIZE_FOR_SPEED)
+		if (IS_GCC OR IS_SOME_CLANG)
+			list(APPEND compiler_flags "-O3")
+		elseif(IS_MSVC)
+			list(APPEND compiler_flags "/O2")
+		else()
+			message(FATAL_ERROR
+				"get_compiler_flags: Unsupported compiler \"${GET_COMPILER_FLAGS_COMPILER_ID}\" for feature OPTIMIZE_FOR_SPEED")
+		endif()
+	endif()
+
+	# Instruct the compiler to optimize for minimized binary size
+	if (GET_COMPILER_FLAGS_OPTIMIZE_FOR_SIZE)
+		if (IS_GCC OR IS_SOME_CLANG)
+			list(APPEND compiler_flags "-Os")
+		elseif(IS_MSVC)
+			list(APPEND compiler_flags "/O1")
+		else()
+			message(FATAL_ERROR
+				"get_compiler_flags: Unsupported compiler \"${GET_COMPILER_FLAGS_COMPILER_ID}\" for feature OPTIMIZE_FOR_SIZE")
+		endif()
+	endif()
+
+	# Instruct the compiler to use an optimization level suitable for debug builds
+	if (GET_COMPILER_FLAGS_OPTIMIZE_FOR_DEBUG)
+		if (IS_GCC OR IS_SOME_CLANG)
+			list(APPEND compiler_flags "-Og")
+		elseif(IS_MSVC)
+			list(APPEND compiler_flags "/Od")
+		else()
+			message(FATAL_ERROR
+				"get_compiler_flags: Unsupported compiler \"${GET_COMPILER_FLAGS_COMPILER_ID}\" for feature OPTIMIZE_FOR_DEBUG")
 		endif()
 	endif()
 

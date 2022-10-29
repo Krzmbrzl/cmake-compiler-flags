@@ -5,7 +5,7 @@
 
 cmake_minimum_required(VERSION 3.5)
 
-project(CompilerFlagsTest)
+project(CompilerFlagsTest LANGUAGES CXX)
 
 list(APPEND CMAKE_MODULE_PATH "${CMAKE_SOURCE_DIR}/..")
 
@@ -108,6 +108,37 @@ get_compiler_flags(
 message(STATUS "Flag(s) to enable unsafe (\"fast\") math: ${UNSAFE_MATH_FLAGS}")
 
 
+# Optimize for speed
+get_compiler_flags(
+	DISABLE_DEFAULT_FLAGS
+	OPTIMIZE_FOR_SPEED
+	OUTPUT_VARIABLE OPTIMIZE_SPEED_FLAGS
+)
+
+message(STATUS "Flag(s) to optimize for speed: ${OPTIMIZE_SPEED_FLAGS}")
+
+
+# Optimize for binary size
+get_compiler_flags(
+	DISABLE_DEFAULT_FLAGS
+	OPTIMIZE_FOR_SIZE
+	OUTPUT_VARIABLE OPTIMIZE_SIZE_FLAGS
+)
+
+message(STATUS "Flag(s) to optimize for binary size: ${OPTIMIZE_SIZE_FLAGS}")
+
+
+# Debug mode optimizations
+get_compiler_flags(
+	DISABLE_DEFAULT_FLAGS
+	OPTIMIZE_FOR_DEBUG
+	OUTPUT_VARIABLE OPTIMIZE_DEBUG_FLAGS
+)
+
+message(STATUS "Flag(s) to enable debug-build optimizations: ${OPTIMIZE_DEBUG_FLAGS}")
+
+
+
 # Test all flags at once and see if a program can be compiled with them
 # (aka: whether all flags are known to the compiler)
 get_compiler_flags(
@@ -117,10 +148,24 @@ get_compiler_flags(
 	DISABLE_ALL_WARNINGS
 	ENSURE_DEFAULT_CHAR_IS_SIGNED
 	ENSURE_DEFAULT_CHAR_IS_UNSIGNED
+	OPTIMIZE_FOR_SPEED
+	OPTIMIZE_FOR_SIZE
+	OPTIMIZE_FOR_DEBUG
 	OUTPUT_VARIABLE ALL_FLAGS
 )
 
 message(STATUS "All supported flags: ${ALL_FLAGS}")
+
+# Make sure cmake doesn't add any flags of its own, which might end up messing up our checks below
+set(CMAKE_CXX_FLAGS "" CACHE INTERNAL "" FORCE)
+set(CMAKE_CXX_FLAGS_DEBUG "" CACHE INTERNAL "" FORCE)
+set(CMAKE_CXX_FLAGS_RELEASE "" CACHE INTERNAL "" FORCE)
+set(CMAKE_CXX_FLAGS_MINSIZEREL "" CACHE INTERNAL "" FORCE)
+set(CMAKE_CXX_FLAGS_RELWITHDEBINFO "" CACHE INTERNAL "" FORCE)
+
+# Prevent problematic default debug flags being added to the tests on Windows
+# (Release also adds extra flags but at least those don't conflict with our current set of flags)
+set(CMAKE_TRY_COMPILE_CONFIGURATION "Release")
 
 message(STATUS "Verifying all flags are accepted by current compiler...")
 foreach (CURRENT_FLAG IN LISTS ALL_FLAGS)

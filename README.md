@@ -14,6 +14,9 @@ The available options are:
 | `DISABLE_DEFAULT_FLAGS` | If this is given, the function omits adding some common default flags, which are normally returned in addition to the ones explicitly requested. |
 | `ENSURE_DEFAULT_CHAR_IS_SIGNED` | Ensures that a plain `char` will be signed. |
 | `ENSURE_DEFAULT_CHAR_IS_UNSIGNED` | Ensures that a plain `char` will be unsigned. |
+| `OPTIMIZE_FOR_SPEED` | Tells the compiler to optimize for maximum performance |
+| `OPTIMIZE_FOR_SIZE` | Tells the compiler to optimize for minimum binary size |
+| `OPTIMIZE_FOR_DEBUG` | Tells the compiler to use an optimization level suitable for debug builds |
 | `COMPILER_ID <id>` | Specifies the compiler ID of the compiler to obtain the flags for. The ID must be one of the possible values of `CMAKE_<LANG>_COMPILER_ID`. Note that currently only `GNU` (GCC), `Clang`, `AppleClang` and `MSVC` are supported. If not given, this option defaults to the currently used compiler for the chosen language. |
 | `LANG <lang>` | The language for which to obtain compiler flags. Note, that currently only `CXX` (C++) is supported. If not given, this defaults to `CXX`. |
 | `OUTPUT_VARIABLE` | The name of the variable the result shall be stored in. This is the only **mandatory** function argument. |
