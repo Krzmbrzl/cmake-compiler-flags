@@ -3,8 +3,6 @@
 # the root of the source tree or at
 # <https://github.com/Krzmbrzl/cmake-compiler-flags/blob/main/LICENSE>.
 
-cmake_minimum_required(VERSION 3.5)
-
 include(CheckCXXCompilerFlag)
 
 function(get_compiler_flags)
