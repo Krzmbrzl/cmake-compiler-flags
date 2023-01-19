@@ -50,16 +50,6 @@ get_compiler_flags(
 message(STATUS "Flag(s) to enable most warnings: ${MOST_WARNINGS_FLAGS}")
 
 
-# Enable all warnings
-get_compiler_flags(
-	DISABLE_DEFAULT_FLAGS
-	ENABLE_ALL_WARNINGS
-	OUTPUT_VARIABLE ALL_WARNINGS_FLAGS
-)
-
-message(STATUS "Flag(s) to enable all warnings: ${ALL_WARNINGS_FLAGS}")
-
-
 # Disable all warnings
 get_compiler_flags(
 	DISABLE_DEFAULT_FLAGS
@@ -142,7 +132,6 @@ message(STATUS "Flag(s) to enable debug-build optimizations: ${OPTIMIZE_DEBUG_FL
 # Test all flags at once and see if a program can be compiled with them
 # (aka: whether all flags are known to the compiler)
 get_compiler_flags(
-	ENABLE_ALL_WARNINGS
 	ENABLE_WARNINGS_AS_ERRORS
 	ENABLE_UNSAFE_MATH
 	DISABLE_ALL_WARNINGS

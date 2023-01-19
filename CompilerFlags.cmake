@@ -9,7 +9,6 @@ function(get_compiler_flags)
 	set(options
 		ENABLE_WARNINGS_AS_ERRORS
 		ENABLE_MOST_WARNINGS
-		ENABLE_ALL_WARNINGS
 		ENABLE_UNSAFE_MATH
 
 		DISABLE_ALL_WARNINGS
@@ -134,18 +133,6 @@ function(get_compiler_flags)
 		else()
 			message(FATAL_ERROR
 				"get_compiler_flags: Unsupported compiler \"${GET_COMPILER_FLAGS_COMPILER_ID}\" for feature ENABLE_MOST_WARNINGS")
-		endif()
-	endif()
-
-	# Enable all warnings
-	if (GET_COMPILER_FLAGS_ENABLE_ALL_WARNINGS)
-		if (IS_GCC OR IS_SOME_CLANG)
-			list(APPEND compiler_flags "-Wall" "-Wpedantic" "-Wextra" "-Wabi")
-		elseif(IS_MSVC)
-			list(APPEND compiler_flags "/Wall")
-		else()
-			message(FATAL_ERROR
-				"get_compiler_flags: Unsupported compiler \"${GET_COMPILER_FLAGS_COMPILER_ID}\" for feature ENABLE_ALL_WARNINGS")
 		endif()
 	endif()
 

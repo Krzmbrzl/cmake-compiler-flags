@@ -8,7 +8,6 @@ The available options are:
 | ---------- | --------------- |
 | `ENABLE_WARNINGS_AS_ERRORS` | Turns warnings into errors |
 | `ENABLE_MOST_WARNINGS` | Enables most of the available compiler warnings. The choice of which exactly this includes, is arguably subjective. |
-| `ENABLE_ALL_WARNINGS` | Attempts to enable all available compiler warnings. Even those, that might be considered inappropriate by some/many developers. |
 | `ENABLE_UNSAFE_MATH` | Enables unsafe (aka "fast") math mode |
 | `DISABLE_ALL_WARNINGS` | Disables all warnings |
 | `DISABLE_DEFAULT_FLAGS` | If this is given, the function omits adding some common default flags, which are normally returned in addition to the ones explicitly requested. |
