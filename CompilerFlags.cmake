@@ -127,7 +127,7 @@ function(get_compiler_flags)
 	# Enable most warnings
 	if (GET_COMPILER_FLAGS_ENABLE_MOST_WARNINGS)
 		if (IS_GCC OR IS_SOME_CLANG)
-			list(APPEND compiler_flags "-Wall" "-Wpedantic" "-Wextra")
+			list(APPEND compiler_flags "-Wall" "-Wpedantic" "-Wextra" "-Wconversion" "-Wsign-conversion")
 		elseif(IS_MSVC)
 			list(APPEND compiler_flags "/W4")
 		else()
