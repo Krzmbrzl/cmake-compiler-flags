@@ -3,7 +3,9 @@
 # the root of the source tree or at
 # <https://github.com/Krzmbrzl/cmake-compiler-flags/blob/main/LICENSE>.
 
-cmake_minimum_required(VERSION 3.5)
+# CMake 3.15 introduced a fix for the "overriding '/W3' with '/W*'" messages one would
+# get when setting custom warning flags
+cmake_minimum_required(VERSION 3.15)
 
 project(CompilerFlagsTest LANGUAGES CXX)
 
