@@ -242,3 +242,27 @@ function(get_compiler_flags)
 
 	set(${GET_COMPILER_FLAGS_OUTPUT_VARIABLE} ${compiler_flags} PARENT_SCOPE)
 endfunction()
+
+
+function(set_compiler_flags)
+	set(options "")
+	set(oneValueArgs "VISIBILITY" "TARGET")
+	set(multiValueArgs "")
+
+	cmake_parse_arguments(SET_COMPILER_FLAGS "${options}" "${oneValueArgs}" "${multiValueArgs}" ${ARGN})
+
+	get_compiler_flags(
+		${SET_COMPILER_FLAGS_UNPARSED_ARGUMENTS}
+		OUTPUT_VARIABLE SELECTED_FLAGS
+	)
+
+	if (NOT SET_COMPILER_FLAGS_VISIBILITY)
+		set(SET_COMPILER_FLAGS_VISIBILITY PRIVATE)
+	endif()
+
+	if (NOT SET_COMPILER_FLAGS_TARGET)
+		message(FATAL_ERROR "Need to specify TARGET")
+	endif()
+
+	target_compile_options(${SET_COMPILER_FLAGS_TARGET} ${SET_COMPILER_FLAGS_VISIBILITY} "${SELECTED_FLAGS}")
+endfunction()

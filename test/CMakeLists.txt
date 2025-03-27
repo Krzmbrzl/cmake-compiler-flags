@@ -73,7 +73,7 @@ message(STATUS "Flag(s) to ensure plain char is signed: ${SIGNED_CHAR_FLAGS}")
 
 add_executable(signed_char "char_signedness.cpp")
 target_compile_definitions(signed_char PRIVATE EXPECT_CHAR_SIGNED)
-target_compile_options(signed_char PRIVATE ${SIGNED_CHAR_FLAGS})
+set_compiler_flags(TARGET signed_char DISABLE_DEFAULT_FLAGS ENSURE_DEFAULT_CHAR_IS_SIGNED)
 
 
 # Ensure plain char is unsigned
@@ -87,7 +87,7 @@ message(STATUS "Flag(s) to ensure plain char is unsigned: ${UNSIGNED_CHAR_FLAGS}
 
 add_executable(unsigned_char "char_signedness.cpp")
 target_compile_definitions(unsigned_char PRIVATE EXPECT_CHAR_UNSIGNED)
-target_compile_options(unsigned_char PRIVATE ${UNSIGNED_CHAR_FLAGS})
+set_compiler_flags(TARGET unsigned_char DISABLE_DEFAULT_FLAGS ENSURE_DEFAULT_CHAR_IS_UNSIGNED)
 
 
 # Enable unsafe (aka fast) math
