@@ -32,4 +32,15 @@ get_compiler_flags(
 add_compile_options(${MY_FLAGS})
 ```
 
+There is an accompanying function `set_compiler_flags` that will set the requested flags on the given target directly. It can be used as
+```cmake
+set_compiler_flags(
+    TARGET myTarget
+    VISIBILITY PUBLIC # Optional, defaults to PRIVATE
+    # Any flag (except OUTPUT_VARIABLE) that get_compiler_flags understands, e.g.
+    ENABLE_MOST_WARNINGS
+    ENABLE_WARNINGS_AS_ERRORS
+)
+```
+
 For more examples, have a look at the [tests](test/CMakeLists.txt).
